@@ -1,0 +1,503 @@
+White Wine Quality Exploration by Irina Munteanu
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+library(ggplot2)
+
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+df <- read.csv('wineQualityWhites.csv')
+```
+
+This report aims to explore the quality of approximately 5000 white wines based on their chemical properties.
+
+# Univariate Plots Section
+
+```{r echo=FALSE, Univariate_Plots}
+#check the dimensions of the dataset
+dim(df)
+```
+
+```{r echo=FALSE}
+#check the structure of the dataset
+str(df)
+```
+
+```{r eval=FALSE, include=FALSE}
+#show summary of each variable
+summary(df)
+```
+
+Our dataset contains 4898 observations and 13 variables. The structure shows that all the variables are classified as numerical.
+
+```{r echo=FALSE}
+#convert numerical variable quality to a factor variable
+df$quality <- factor(df$quality)
+```
+
+```{r echo=FALSE}
+#check levels of factor quality variable
+levels(df$quality)
+```
+
+Here I converted the numerical variable quality to a factor variable.
+
+```{r echo=FALSE}
+#plot the histogram of quality
+ggplot(aes(quality), data = df) +
+  geom_bar()
+```
+
+```{r echo=FALSE}
+#5 number summary of quality
+summary(df$quality)
+```
+
+The distribution of quality appears to be normal. The median and the mean are almost the same. There are more than 2000 wines with a 6 rating. Since the quality is rated between 0 (very bad) and 10 (excellent), this means that most of the wines are above average.
+
+```{r echo=FALSE}
+#count how many wines are qualified by the ratings
+table(df$quality)
+```
+
+Count of wines by ratings. We can clearly see that there are more than 200 wines rated 6.
+
+```{r echo=FALSE}
+#plot the histogram of alcohol
+ggplot(aes(alcohol), data = df) +
+  geom_histogram(binwidth = 0.1)
+```
+
+Here we have the distribution of the percent alcohol content of the wine. It appears to be slightly skewed with the alcohol peaking at around 9.5.
+
+```{r echo=FALSE}
+#plot histogram of sulphates
+ggplot(aes(sulphates), data = df) +
+  geom_histogram(binwidth = 0.01)
+```
+
+We have a normal distribution of sulphates, wine additives which can contribute to sulfur dioxide gas levels, which acts as antimicrobials and antioxidants.
+
+```{r echo=FALSE}
+#plot the distribution of ph
+ggplot(aes(pH), data = df) + 
+  geom_histogram(binwidth = 0.05)
+```
+
+```{r echo=FALSE}
+#5 number summary of pH
+summary(df$pH)
+```
+
+pH describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic). Most of the wines are between 3 and 3.5 on the pH scale.
+
+```{r echo=FALSE}
+#distribution of density
+ggplot(aes(density), data = df) +
+  geom_histogram(binwidth = 0.001)
+```
+
+```{r echo=FALSE}
+#5 number summary of density
+summary(df$density)
+```
+
+Density appears to be normally distributed across white wines.
+
+```{r echo=FALSE}
+#plot the total sulfur dioxide
+ggplot(aes(total.sulfur.dioxide), data = df) +
+  geom_histogram(binwidth = 10)
+```
+
+```{r echo=FALSE}
+#plot the free sulfur dioxide
+ggplot(aes(free.sulfur.dioxide), data = df) +
+  geom_histogram(binwidth = 5)
+```
+
+```{r echo=FALSE, message=FALSE}
+#transformation of free sulfur dioxide histogram
+ggplot(aes(free.sulfur.dioxide), data = df) +
+  geom_histogram() +
+  scale_x_log10() +
+  ggtitle('Free Sulfur Dioxide (log10)')
+```
+
+Total sulfur dioxide represents the amount of free and bound forms of sulfur dioxide gas. In low concentrations, sulfur dioxide is mostly undetectable in wine, but at free concentrations over 50 grams/liter, sulfur dioxide becomes evident in the nose and taste of wine. Free sulfur dioxide prevents microbial growth and the oxidation of wine.
+
+```{r echo=FALSE, message=FALSE}
+#plot the amount of salt in wines
+ggplot(aes(chlorides), data = df) +
+  geom_histogram()
+```
+
+This histogram shows the amount of salt in white wines. The majority of wines have less than 0.1 gram/liter.
+
+```{r echo=FALSE}
+#histogram of residual sugar
+ggplot(aes(residual.sugar), data = df) +
+  geom_histogram(binwidth = 1) +
+  coord_cartesian(xlim = c(0, 40))
+```
+
+```{r}
+#5 number summary of residual sugar
+summary(df$residual.sugar)
+```
+
+This plot shows the distribution of the amount of sugar remaining after fermentation stops. Wines with greater than 45 grams/liter are considered sweet. Most of our wines have less than 10 grams/liter.
+
+```{r echo=FALSE, message=FALSE}
+#plot the citric acid
+ggplot(aes(citric.acid), data = df) +
+  geom_histogram()
+```
+
+The citric acid is responsible for the wines' "freshness" and flavors. Most of our wines have citric acid less than 0.5 grams/liter.
+
+```{r echo=FALSE}
+#plot histogram of volatile acidity
+ggplot(aes(volatile.acidity), data = df) +
+  geom_histogram(binwidth = 0.01)
+```
+
+```{r echo=FALSE, message=FALSE}
+#plot fixed acidity
+ggplot(aes(fixed.acidity), data = df) +
+  geom_histogram()
+```
+
+The volatile acidity histogram shows the distribution of the amount of acetic acid in wines, which at too high levels can lead to an unpleasant, vinegar taste. The peak is at around 0.25.
+
+The fixed acidity histogram shows the tartaric acid of wines.
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+
+There are 4898 white wine observations and 13 features: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol, quality.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The main features in our data set are quality, alcohol %, pH, residual sugar, citric acid and volatile acidity. I suspect these and in combination with other variables determine the quality rating.  
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+I believe also free sulfur dioxide and total sulfur dioxide in relationship with the rest of the variables could contribute to my analysis of quality.
+
+
+# Bivariate Plots Section
+
+```{r echo=FALSE, Bivariate_Plots}
+#scatterplot of quality vs alcohol
+ggplot(aes(quality, alcohol), data = df) +
+  geom_jitter(alpha = 0.1)
+```
+
+There is a moderate positive correlation between alcohol and quality. We can see that as the alcohol increases the rating slightly increases as well.
+
+```{r echo=FALSE}
+#plot the sulphates vs quality
+ggplot(aes(quality, sulphates), data = df) +
+  geom_jitter(alpha = 0.1)
+
+```
+
+There is no meaningful relationship between sulphates and quality. This wine additive has no impact on quality.
+
+```{r echo=FALSE}
+#plot relationship between quality and pH
+ggplot(aes(quality, pH), data = df) +
+  geom_jitter(alpha = 0.1)
+```
+
+There is no meaningful relationship between pH and quality. 
+
+```{r echo=FALSE}
+#plot the relationship between quality and density
+ggplot(aes(quality, density), data = df) +
+  geom_jitter(alpha = 0.1)
+```
+
+We have a small negative relationship between quality and density. As the density increases, the quality decreases.
+
+```{r echo=FALSE}
+#plot the relationship between quality and total sulfur dioxide
+ggplot(aes(quality, total.sulfur.dioxide), data = df) +
+  geom_jitter(alpha = 0.1)
+```
+
+From the plot above we see that there is a small negative relationship between total sulfur dioxide and quality. This means that as the total sulfur dioxide increases the quality decreases.
+
+```{r echo=FALSE}
+#plot the relationship between free sulfur dioxide and quality
+ggplot(aes(quality, free.sulfur.dioxide), data = df) +
+  geom_jitter(alpha = 0.1)
+```
+
+There is no meaningful correlation between free sulfur dioxide and quality.
+
+```{r echo=FALSE}
+#plot the relationship between chlorides and quality
+ggplot(aes(quality, chlorides), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1) 
+```
+
+There is a small negative correlation between chlorides and quality. If the amount of salt increases the quality decreases.
+
+```{r echo=FALSE}
+#plot the relationship between residual sugar and quality
+ggplot(aes(quality, residual.sugar), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+```
+
+There is no meaningful relationship between residual sugar and quality.
+
+```{r echo=FALSE}
+#plot the citric acid vs quality
+ggplot(aes(quality, citric.acid), data = df) +
+  geom_point(alpha = 0.1, position = 'jitter')
+```
+
+There is no meaningful relationship between citric acid and quality.
+
+```{r echo=FALSE}
+#plot the relationship between volatile acidity and quality
+ggplot(aes(quality, volatile.acidity), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+```
+
+Small negative correlation between volatile acidity and quality.
+
+```{r echo=FALSE}
+#plot relationship between fixed acidity and quality
+ggplot(aes(quality, fixed.acidity), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+```
+
+There is no clear correlation between fixed acidity and quality.
+
+```{r echo=FALSE}
+ggplot(aes(alcohol, density), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+```
+
+We observe a strong negative correlation between density and alcohol. As the percent of alcohol increases the density decreases.
+
+```{r echo=FALSE}
+ggplot(aes(alcohol, total.sulfur.dioxide), data = df) +
+  geom_point(position = 'jitter', alpha= 0.1)
+```
+
+We have a moderate negative relationship between alcohol and total sulfur dioxide.
+
+```{r echo=FALSE}
+ggplot(aes(pH, fixed.acidity), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+```
+
+The plot above shows a moderate negative correlation between fixed acidity and pH.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#plot the relationship between density and residual sugar and omit 1% of residual sugar
+ggplot(aes(density, residual.sugar), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1) +
+  ylim(0, quantile(df$residual.sugar, 0.99))
+```
+
+This is a strong positive correlation between density and residual sugar. 
+
+```{r echo=FALSE}
+ggplot(aes(density, total.sulfur.dioxide), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1)
+
+```
+
+This is a moderate positive correlation between density and total sulfur dioxide.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(free.sulfur.dioxide, total.sulfur.dioxide), data = df) +
+  geom_point(position = 'jitter', alpha = 0.1) +
+  xlim(0, quantile(df$total.sulfur.dioxide, 0.90))
+```
+
+We observe a moderate positive correlation between total sulfur dioxide and free sulfur dioxide.
+
+# Bivariate Analysis
+
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+Unexpectedly, the main features of interest that I listed above have no meaningful relationship with quality. The ones that have a correlation though, are alcohol which is moderate positive and volatile acidity which is small negative.
+
+I have found that there is a small negative correlation between density and quality and between total sulfur dioxide and quality. The amount of salt also has a small impact in quality (chlorides).
+
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+I also found that there are some relationships between the features of wines. For example, I observed a strong negative correlation between density and alcohol. As the percent of alcohol increases the density decreases. There is also a moderate negative relationship between alcohol and total sulfur dioxide. There is a strong positive correlation between density and residual sugar.
+
+### What was the strongest relationship you found?
+
+The strongest correlations I found are between other features. Strong positive correlation between residual sugar and density, as the amount of sugar increases the density increases.
+Another strong relationship was observed between density and alcohol.As the percent of alcohol increases the density decreases.
+
+# Multivariate Plots Section
+
+
+```{r echo=FALSE, Multivariate_Plots}
+#create boxplot to see the how the average looks like across the quality buckets
+ggplot(aes(quality, alcohol), data = df) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean, geom = 'point', shape = 4)
+
+```
+
+In this plot we can see that the average alcohol percent is higher for the wines with higher quality rating.
+
+```{r echo=FALSE, message=FALSE}
+ggplot(aes(alcohol, fill = quality), data = df) +
+  geom_histogram() +
+  facet_wrap(~quality) +
+  scale_fill_brewer(type = 'qual')
+```
+
+Here we have a histogram of alcohol wrapped by quality. There is a normal distribution in alcohol for the quality above 5. We can see here that wines rated above average peak around 11% alcohol.
+
+```{r echo=FALSE}
+ggplot(aes(density, alcohol, color = quality), data = df) +
+  geom_point() +
+  scale_color_brewer(type = 'qual')
+
+```
+
+In this plot we observe a strong negative relationship between alcohol and density, especially for the wines that are rated above 5 in quality.
+
+```{r echo=FALSE}
+ggplot(aes(total.sulfur.dioxide, alcohol, color = quality), data = df) +
+  geom_point() +
+  scale_color_brewer(type = 'qual')
+```
+
+We observe here a moderate negative relationship between alcohol and total sulfur dioxide wrapped by quality, especially for the wines that are rated above 5.
+
+```{r echo=FALSE, warning=FALSE}
+ggplot(aes(residual.sugar, density, color = quality), data = df) +
+  geom_point() +
+  scale_color_brewer(type = 'qual') +
+  xlim(0, quantile(df$residual.sugar, 0.99)) +
+  geom_smooth(method = 'lm', color = 'black')
+```
+
+I omited here the 1% data in residual sugar. There is a strong relationship between density and residual sugar for wines rated 5 and above 5. As the amount of sugar increases the density increases.
+
+```{r echo=FALSE}
+ggplot(aes(fixed.acidity, pH, color = quality), data = df) + 
+  geom_jitter() +
+  scale_color_brewer(type = 'qual')
+```
+
+This plot shows pH for each quality in relationship with fixed acidity.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+I observed that wines which have a higher percent of alcohol are higher rated. Also I observed that wines which are higher rated, thus an increased percent of alcohol have a smaller density. 
+
+
+### Were there any interesting or surprising interactions between features?
+
+Higher rated wines have a lower total sulfur dioxide, which means that in low concentrations sulfur dioxide is mostly undetectable.
+
+Higher rated wines have a lower amount of sugar than the other rated categories.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+#plot the histogram of alcohol
+ggplot(aes(alcohol, fill = quality), data = df) +
+  geom_histogram(binwidth = 0.1) +
+  xlab('Alcohol %')
+  ggtitle('Alcohol Distribution by Quality')
+```
+
+### Description One
+
+Here we have the distribution of the percent alcohol content of the wine. It appears to be slightly skewed with the alcohol peaking at around 9.5.
+However, if we look at the higher rated wines, we see that the peak is around 11.
+So, wines rated above average have a higher percent of alcohol.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+#plot the relationship between chlorides and quality
+ggplot(aes(quality, chlorides), data = df) +
+  geom_jitter(alpha = 0.1, color = 'blue') +
+  geom_boxplot() +
+  stat_summary(fun.y = mean, geom = 'point', 
+               color = 'red', shape = 4, size = 5) +
+  xlab('Quality Rating') + 
+  ggtitle('Quality vs Amount of Salt')
+```
+
+### Description Two
+
+There is a small negative relationship between quality and amount of salt in wine. This means that higher rated wines have less salt than the lower rated wines. We can clearly see that as the mean decreases in salt the quality increases.
+
+### Plot Three
+```{r echo=FALSE, Plot_Three, warning=FALSE}
+ggplot(aes(residual.sugar, density, color = quality), data = df) +
+  geom_point() +
+  scale_color_brewer(type = 'seq') +
+  xlim(0, quantile(df$residual.sugar, 0.99)) +
+  geom_smooth(method = 'lm', color = 'red') +
+  xlab('Residual Sugar (g/l)') +
+  ylab('Density (g/cm^3)') +
+  ggtitle('Density vs Sugar by Quality')
+```
+
+### Description Three
+
+In this plot we see that most the wines rated above average are less sweeter than the rest of the wines. 
+
+
+# Reflection
+
+I found that the wines that have a higher rating in quality have a higher percent of alcohol, are less sweeter and have less salt. I also found that there are also other features that have a meaningful impact in quality, like density total amount of sulfur dioxide.
+
+I was expected that the main features like pH, residual sugar, acid citric and volatile acidity would have a direct impact over the quality of the wine, but it seems they have in combination with other features.
+
+The challenges I enocountered were the fact the variables were not clearly explained as they represent chemical properties. We need to make sure we understand them so that we are able to present them in a concise and clear manner, so that the audience would know what we are talking about.
+
+On the other hand, I found a tidy data set which was easy to work with as I didn't have to struggle with cleaning the data.
+
+Overall I am content about the data set I have analyzed and of the insights I found. I didn't expect to find features that I wouldn't think about to contribute to the wines quality ratings.
+
+For the future I would perform further analyses outside EDA in order to confirm the findings or find some insights that perhaps are not obvious at this stage.
+
+
+
