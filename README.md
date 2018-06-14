@@ -10,9 +10,9 @@ In this project, you will use R and apply exploratory data analysis techniques t
 
 In order to complete the project, you will need to install R. After installing R, you will need to download and install R Studio. Finally, you will need to install a few packages. We recommend opening R Studio and installing the following packages using the command line.
 
-install.packages("ggplot2", dependencies = T) 
-install.packages("knitr", dependencies = T)
-install.packages("dplyr", dependencies = T)
+* install.packages("ggplot2", dependencies = T) 
+* install.packages("knitr", dependencies = T)
+* install.packages("dplyr", dependencies = T)
 
 ## Project Details
 
