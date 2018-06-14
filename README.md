@@ -37,3 +37,8 @@ You will select three plots from your analysis to polish and share in this secti
 3. A final section called “Reflection”
 
 This should contain a few sentences about your struggles, successes, and ideas for future exploration on the data set (see the Project Rubric for more information).
+
+## Project Submission
+
+* The RMD file containing the analysis (final plots and summary, and reflection)
+* the HTML file knitted from the RMD file using the knitr package
